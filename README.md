@@ -1,8 +1,10 @@
 # Dev Certificate Helper
 
-Simple script that creates a development certificate for local web development testing using HTTPS.
+Simple script for Windows machines that creates a development certificate for local web development testing using HTTPS.
 
-I made this script to make it a little easier on myself whenever I need to generate a certificate instead of scouring Stack Overflow trying to find the exact command I used 6 months ago.
+Could probably be modified for other OS's pretty easily by using the tool each OS needs to add a certificate to its certificate authority.
+
+I made this script to make it a little easier for myself whenever I need to generate a certificate instead of scouring Stack Overflow trying to find the exact command I used 6 months ago.
 
 The generated certificate will have a subject of:
 
@@ -27,6 +29,8 @@ This configuration works well for me with the most recent security requirements 
 ## How to use:
 
 `./generate-development-certificate.sh`
+
+Just execute the script and follow the prompts! You'll received a security warning about installing an untrusted certificate. This is normal since we are adding a "localhost" certificate to the trusted authority.
 
 Options:
 
