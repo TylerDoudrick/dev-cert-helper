@@ -2,6 +2,28 @@
 
 Simple script that creates a development certificate for local web development testing using HTTPS.
 
+I made this script to make it a little easier on myself whenever I need to generate a certificate instead of scouring Stack Overflow trying to find the exact command I used 6 months ago.
+
+The generated certificate will have a subject of:
+
+```
+CN: localhost
+OU: MyDivision
+O: MyCompany
+L: SomeCity
+ST: SomeState
+C: US
+```
+
+It will also add in a subject alt name of:
+
+```
+DNS: localhost
+IP: 127.0.0.1
+```
+
+This configuration works well for me with the most recent security requirements for certificates when using Google Chrome and trying to store Cookies served from a server also running in the development environment. Don't use these anywhere other than local development :)
+
 ## How to use:
 
 `./generate-development-certificate.sh`
@@ -18,6 +40,6 @@ Options:
 
 `-h --help` -- Print the help text
 
-Example:
+### Example:
 
-`./generate-development-certificate.sh --filename cert --directory certificates` -> Will generate cert.pem and cert.key in the certificates directory. The certificates directory will be created if it does not exist.
+`./generate-development-certificate.sh --filename cert --directory certificates` -> Will generate cert.pem and cert.key in the ./certificates directory. The certificates directory will be created if it does not exist.

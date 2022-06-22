@@ -5,6 +5,19 @@ useCurrentDirectory=false
 skipCAImport=false
 dir=$(pwd)
 
+print_help () {
+    echo "Description: "
+    echo "  This is a simple script that creates a development certificate for local web development testing using HTTPS.\n\n"
+    echo
+    printf "Options\n"
+    printf "%-30s ==> %-30s\n" "-f --filename [string]" "[string] will be the filename for the generated .pem and .key files."
+    printf "%-30s ==> %-30s\n" "-d --directory [string]" "[string] will be the directory where the generated files will be stored. Directory wil be created if it does not exist. Cannot be used if --current is set."
+    printf "%-30s ==> %-30s\n" "-c --current" "If set, the files will be stored in the current working directory. Cannot be used if --directory is set."
+    printf "%-30s ==> %-30s\n" "-s --skip" "If set, the certificate will not be stored in the local user certificate authority."
+    printf "%-30s ==> %-30s\n" "-h --help" "Print this exact help text."
+
+}
+
 for arg in "$@"; do
   shift
   case "$arg" in
@@ -12,11 +25,12 @@ for arg in "$@"; do
     '--directory') set -- "$@" '-d'   ;;
     '--current')   set -- "$@" '-c'   ;;
     '--skip')     set -- "$@" '-s'   ;;
+    '--help')     set -- "$@" '-h'   ;;
     *)          set -- "$@" "$arg" ;;
   esac
 done
 
-while getopts ":f:d:cs" option; do
+while getopts ":f:d:csh" option; do
    case $option in
         f) # Filename Input
            filename=$OPTARG;;
@@ -26,18 +40,20 @@ while getopts ":f:d:cs" option; do
             useCurrentDirectory=true;;
         s) # Skip adding to root certs
             skipCAImport=true;;
+        h) # Print Help
+            print_help;;
         \?) # Invalid option
             echo "Error: Invalid option ${OPTART}"
-            exit 1;;
+            print_help;;
         : ) echo "Error: Option ${OPTARG} requires an argument." >&2
-            exit 1;;
+            print_help;;
    esac
 done
 
 if $useCurrentDirectory && ! [[ -z "${directory// }" ]];
 then
     echo "Error: Cannot use directory name option with current directory flag!"
-    exit 1
+    print_help
 fi
 
 if [[ -z "${filename// }" ]]
@@ -90,5 +106,7 @@ if $skipCAImport;
 then
     echo "Skipping import into local Certificate Authority"
 else
-    certutil.exe -addstore -user -f root ./${filename}.pem 
+    certutil.exe -addstore -user -f root ./${filename}.pem || (printf "\n\nCertUtil failed to add the certificate to the store. Check out the error above, it might have some useful information. \n\n" && exit 1)
 fi
+
+exit 0
